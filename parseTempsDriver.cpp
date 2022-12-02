@@ -32,7 +32,7 @@ int main(int argc, char** argv)
 
     // vector
     auto readings = parse_raw_temps<std::vector<CoreTempReading>>(input_temps);
-
+    if (readings.empty()) return 0;
     // list
     // auto readings = parse_raw_temps<std::list<CoreTempReading>>(input_temps);
 
@@ -46,9 +46,27 @@ int main(int argc, char** argv)
         }
         cout << *(coreTemps.end() - 1) << "])" << "\n";
     }
-    
-    display(cout, readings, 0);
 
+    std::vector<ofstream> outs(readings.begin()->second.size());
+    int k = 0;
+    for(auto &out : outs){
+        std::string name = BASE_FILENAME + to_string(k) + 
+                           FILENAME_SEPARATOR + PieceWise::MATHTYPE + FILE_EXT;
+        out.open(name);
+        k++;
+    }
+
+
+    display(outs, readings);
+
+
+    std::vector<std::vector<Point>> singleCoreReadings;
+    arrangeByCore<std::vector<CoreTempReading>, std::vector<vector<Point>>>(readings, singleCoreReadings);
+
+    
+    for(auto &out : outs){
+        out.close();
+    }
 
 
     return 0;

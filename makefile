@@ -14,3 +14,4 @@ $(MAINPROG): $(OBJECTS)
 
 clean:
 	rm *.o $(MAINPROG)
+	rm core_reading-*_*.txt

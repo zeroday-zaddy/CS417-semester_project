@@ -5,8 +5,7 @@
 #include <utility>
 #include <string>
 #include "piecewise.h"
-
-using Point = std::pair<double, double>;
+#include "point.h"
 
 class PieceWise{
     public:
