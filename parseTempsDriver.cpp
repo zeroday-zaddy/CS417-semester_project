@@ -10,6 +10,8 @@
 #include <utility>
 
 #include "parseTemps.h"
+#include "piecewise.h"
+#include "leastsquares.h"
 #include "DataDisplayer.h"
 
 using namespace std;
@@ -33,6 +35,10 @@ int main(int argc, char** argv)
     // vector
     auto readings = parse_raw_temps<std::vector<CoreTempReading>>(input_temps);
     if (readings.empty()) return 0;
+    
+    std::vector<std::vector<Point>> singleCoreReadings;
+    arrangeByCore<std::vector<CoreTempReading>, std::vector<vector<Point>>>(readings, singleCoreReadings);
+
     // list
     // auto readings = parse_raw_temps<std::list<CoreTempReading>>(input_temps);
 
@@ -47,26 +53,46 @@ int main(int argc, char** argv)
         cout << *(coreTemps.end() - 1) << "])" << "\n";
     }
 
-    std::vector<ofstream> outs(readings.begin()->second.size());
+    //----LINEAR INTERPOLATION
+
+
+    std::vector<ofstream> piecewise_outs(singleCoreReadings.size());
     int k = 0;
-    for(auto &out : outs){
+    for(auto &out : piecewise_outs){
         std::string name = BASE_FILENAME + to_string(k) + 
                            FILENAME_SEPARATOR + PieceWise::MATHTYPE + FILE_EXT;
         out.open(name);
         k++;
     }
-
-
-    display(outs, readings);
-
-
-    std::vector<std::vector<Point>> singleCoreReadings;
-    arrangeByCore<std::vector<CoreTempReading>, std::vector<vector<Point>>>(readings, singleCoreReadings);
-
-    
-    for(auto &out : outs){
-        out.close();
+    auto piecewise_outs_Itr = piecewise_outs.begin();
+    for(auto &core : singleCoreReadings){
+        auto lines = PieceWise::linearly_interpolate<std::vector<Point>>(core);
+        display<ofstream>(*piecewise_outs_Itr, lines, PieceWise::MATHTYPE);
+        piecewise_outs_Itr->close();
+        ++piecewise_outs_Itr;
     }
+
+
+    //----LEAST SQUARES APPROXIMATION
+
+
+    std::vector<ofstream> leastsqs_outs(singleCoreReadings.size());
+    k = 0;
+    for(auto &out : leastsqs_outs){
+        std::string name = BASE_FILENAME + to_string(k) + 
+                           FILENAME_SEPARATOR + LeastSquares::MATHTYPE + FILE_EXT;
+        out.open(name);
+        k++;
+    }
+    auto leastsqs_outs_Itr = leastsqs_outs.begin();
+    for(auto const &core : singleCoreReadings){
+        LineFormula line[] = {LeastSquares::approximate(core, 2)};
+        
+        display(*leastsqs_outs_Itr, line, LeastSquares::MATHTYPE);
+        leastsqs_outs_Itr->close();
+        ++leastsqs_outs_Itr;
+    }
+    
 
 
     return 0;
