@@ -42,9 +42,11 @@ class PieceWise{
 
             Point p1(x1, y1);
             Point p2(x2, y2);
-
+            
             LineFormula line = PieceWise::interpolate(p1, p2);
             line.ysub = k;
+            line.infiniteDomain = false;
+            line.domain = {x1, x2};
             lines.push_back(line);
 
             k++;

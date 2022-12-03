@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cmath>
 #include <string>
+#include "processor.h"
 
 class LeastSquares{
     
@@ -12,8 +13,7 @@ public:
 
     static const std::string MATHTYPE;
 
-    template<typename PointContainer = std::vector<Point>>
-    static LineFormula approximate(const PointContainer &data, int degree){
+    static LineFormula approximate(const SingleCoreTempReading &data, int degree){
         LineFormula line;
         line.coefficients.resize(degree);
         if(degree == 2){
@@ -37,6 +37,7 @@ public:
             line.coefficients[0] = summation_f / n - (summation_x / n) * line.coefficients[1];
             
         }
+        line.domain = {data.begin()->first, data.rbegin()->first};
         return line;
     }
 };

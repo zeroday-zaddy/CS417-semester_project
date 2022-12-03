@@ -10,9 +10,10 @@
 #include <utility>
 
 #include "parseTemps.h"
+#include "processor.h"
 #include "piecewise.h"
 #include "leastsquares.h"
-#include "DataDisplayer.h"
+#include "datadisplayer.h"
 
 using namespace std;
 
@@ -36,8 +37,8 @@ int main(int argc, char** argv)
     auto readings = parse_raw_temps<std::vector<CoreTempReading>>(input_temps);
     if (readings.empty()) return 0;
     
-    std::vector<std::vector<Point>> singleCoreReadings;
-    arrangeByCore<std::vector<CoreTempReading>, std::vector<vector<Point>>>(readings, singleCoreReadings);
+    std::vector<SingleCoreTempReading> singleCoreReadings;
+    processByCore<std::vector<CoreTempReading>, std::vector<SingleCoreTempReading>>(readings, singleCoreReadings);
 
     // list
     // auto readings = parse_raw_temps<std::list<CoreTempReading>>(input_temps);
@@ -66,7 +67,7 @@ int main(int argc, char** argv)
     }
     auto piecewise_outs_Itr = piecewise_outs.begin();
     for(auto &core : singleCoreReadings){
-        auto lines = PieceWise::linearly_interpolate<std::vector<Point>>(core);
+        auto lines = PieceWise::linearly_interpolate<SingleCoreTempReading>(core);
         display<ofstream>(*piecewise_outs_Itr, lines, PieceWise::MATHTYPE);
         piecewise_outs_Itr->close();
         ++piecewise_outs_Itr;
