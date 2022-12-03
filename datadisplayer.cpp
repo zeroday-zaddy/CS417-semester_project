@@ -11,7 +11,13 @@
 
 
 
-
+/**
+ * output a line formula
+ *
+ * @param outs where to output
+ * @param line the line
+ * @return the output 
+ */
 std::ostream& operator<<(std::ostream& outs, const LineFormula& line)
 {
     std::stringstream ss;

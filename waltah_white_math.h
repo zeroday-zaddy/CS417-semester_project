@@ -3,7 +3,18 @@
 
 #include <utility>
 
+/**
+ * A pair of values where the
+ *   - _first_ attribute is a x value on coordinate system
+ *   - _second attribute is a y value on coordinate system
+ */
 using Point = std::pair<double, double>;
+
+/**
+ * A pair of values where the
+ *   - _first_ attribute is the starting x value on coordinate system
+ *   - _second attribute is the ending x value on coordinate system
+ */
 using Domain = std::pair<double, double>;
 
 struct LineFormula{

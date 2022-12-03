@@ -13,6 +13,13 @@ public:
 
     static const std::string MATHTYPE;
 
+    /**
+     * least squares approximation from SingleCoreTempReading
+     * currently only does a degree of 2 polynomial
+     *
+     * @param data SingleCoreTempReading to approximate
+     * @param degree degree of polynomial that the approximation comes to
+     */
     static LineFormula approximate(const SingleCoreTempReading &data, int degree){
         LineFormula line;
         line.coefficients.resize(degree);

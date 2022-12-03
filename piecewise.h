@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include "piecewise.h"
+#include "processor.h"
 #include "waltah_white_math.h"
 
 class PieceWise{
@@ -14,7 +15,13 @@ class PieceWise{
     
     static const std::string MATHTYPE;
     
-
+    
+    /**
+     * produce a linear LineFormula from two points
+     *
+     * @param p1 first point
+     * @param p2 second point
+     */
     static LineFormula interpolate(const Point &p1, const Point &p2){
         double dy = p2.second - p1.second;
         double dx = p2.first - p1.first;
@@ -28,9 +35,17 @@ class PieceWise{
         return line;
     }
 
-    template<typename PointContainer, 
-             typename LineFormulaContainer = std::vector<LineFormula>>
-    static LineFormulaContainer linearly_interpolate (const PointContainer &data){
+
+    /**
+     * produce a piecewise linear interpolaion in the form of a container of LineFormula
+     *
+     * @tparam LineFormulaContainer option to change container of LineFormula
+     * @param data SingleCoreTempReading to calculate with
+     * 
+     * @return a container of LineFormula representing the piecewise linear interpolaion  
+     */
+    template<typename LineFormulaContainer = std::vector<LineFormula>>
+    static LineFormulaContainer linearly_interpolate (const SingleCoreTempReading &data){
         LineFormulaContainer lines;
         int k = 0;
         for(auto itr = data.begin(); itr+1 != data.end(); itr++){

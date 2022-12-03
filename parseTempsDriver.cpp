@@ -67,7 +67,7 @@ int main(int argc, char** argv)
     }
     auto piecewise_outs_Itr = piecewise_outs.begin();
     for(auto &core : singleCoreReadings){
-        auto lines = PieceWise::linearly_interpolate<SingleCoreTempReading>(core);
+        auto lines = PieceWise::linearly_interpolate(core);
         display<ofstream>(*piecewise_outs_Itr, lines, PieceWise::MATHTYPE);
         piecewise_outs_Itr->close();
         ++piecewise_outs_Itr;

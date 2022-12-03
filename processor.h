@@ -9,6 +9,10 @@
 
 #include "waltah_white_math.h"
 
+/**
+ * This represents a container of points
+ * that make up the readings of a single core
+ */
 using SingleCoreTempReading = std::vector<Point>;
 
 /**
